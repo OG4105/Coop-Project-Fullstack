@@ -1,0 +1,16 @@
+# Private docs
+/docs
+
+# Secrets & local environment
+application-local.properties
+application-secret.properties
+.env
+.env.*
+!.env.example
+
+# Build output
+build
+
+# OS / editor
+.DS_Store
+Thumbs.db
