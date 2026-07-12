@@ -1,21 +1,38 @@
 package com.notelyft.backend.config;
 
+import java.util.List;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-@Configuration //Definition of Spring beans, config
+@Configuration
 public class SecurityConfig {
 
-    @Bean // Spring Management of the objects the securityFilterChain returns
+    @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-            // TEMPORARY: allowing every request so building and testing the API is faster.
-            // Real authentication (login, per-user notes) comes later
-            .csrf(csrf -> csrf.disable()) // Disabling Protection, CSRF off: stateless REST API, no session cookies to protect
-            .authorizeHttpRequests(auth -> auth.anyRequest().permitAll()); // Every HTTP request is authorized without login
-
+            .cors(Customizer.withDefaults())   // NEW: turn CORS on, using the bean below
+            .csrf(csrf -> csrf.disable())
+            .authorizeHttpRequests(auth -> auth.anyRequest().permitAll());
         return http.build();
+    }
+
+    // NEW: which frontends are allowed to read our responses
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration config = new CorsConfiguration();
+        config.setAllowedOrigins(List.of("http://localhost:5173"));                 // React dev server
+        config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        config.setAllowedHeaders(List.of("*"));
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", config);   // apply to all paths
+        return source;
     }
 }
