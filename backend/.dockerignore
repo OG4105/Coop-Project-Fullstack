@@ -1,0 +1,9 @@
+target/
+src/main/resources/application-local.properties
+.env.docker
+.git/
+.idea/
+.vscode/
+*.iml
+HELP.md
+.docs/
