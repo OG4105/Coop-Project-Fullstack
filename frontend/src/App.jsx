@@ -1,13 +1,15 @@
 import { useState, useEffect } from 'react';
 import './App.css';
 
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8080";
+
 function App() {
 
   const [notes, setNotes] = useState([]);
 
   // Function that reloads fetch from Backend
   const fetchNotes = () => {
-  fetch("http://localhost:8080/api/notes")
+  fetch(`${API_URL}/api/notes`)
     .then(res => res.json())
     .then(data => setNotes(data));
   };
@@ -21,7 +23,7 @@ function App() {
   // Function UPDATE handler
   const handleUpdate = () => {
     if (!title.trim()) return;   // don't submit without a title
-    fetch(`http://localhost:8080/api/notes/${editingId}`, { // fetch based on editing id
+    fetch(`${API_URL}/api/notes/${editingId}`, { // fetch based on editing id
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ title, content })
@@ -37,7 +39,7 @@ function App() {
   // Function ADD handler
   const handleAdd = () => {
     if (!title.trim()) return;   // don't submit without a title
-    fetch("http://localhost:8080/api/notes", { //Fetches from site notes
+    fetch(`${API_URL}/api/notes`, { //Fetches from site notes
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ title, content })
@@ -47,7 +49,7 @@ function App() {
 
   // Function DELETE handler
   const handleDelete = (id) => { // Search based on ID
-    fetch(`http://localhost:8080/api/notes/${id}`, { method: "DELETE" })
+    fetch(`${API_URL}/api/notes/${id}`, { method: "DELETE" })
       .then(() => fetchNotes());
   };
 
